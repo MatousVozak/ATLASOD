@@ -157,8 +157,9 @@ samples = [
 
 	"mc_345060.ggH125_ZZ4lep.4lep.root",
 	"mc_363490.llll.4lep.root",
-#   "mc_410000.ttbar_lep.4lep.root",
-#   "mc_363491.lllv.4lep.root",
+   "mc_363356.ZqqZll.4lep.root",
+   "mc_410000.ttbar_lep.4lep.root",
+   "mc_363491.lllv.4lep.root",
 #
 #"mc_364114.Zee_PTV0_70_CVetoBVeto.4lep.root",
 #"mc_364115.Zee_PTV0_70_CFilterBVeto.4lep.root",
@@ -202,15 +203,15 @@ samples = [
 #"mc_364139.Ztautau_PTV280_500_BFilter.4lep.root",
 #"mc_364140.Ztautau_PTV500_1000.4lep.root",
 
-#"mc_361106.Zee.4lep.root",
-#"mc_361107.Zmumu.4lep.root",
-#"mc_361108.Ztautau.4lep.root",
+"mc_361106.Zee.4lep.root",
+"mc_361107.Zmumu.4lep.root",
+"mc_361108.Ztautau.4lep.root",
 
-##Data periods
-#      "data_A.4lep.root",
-#      "data_B.4lep.root",
-#      "data_C.4lep.root",
-#      "data_D.4lep.root"
+#Data periods
+      "data_A.4lep.root",
+      "data_B.4lep.root",
+      "data_C.4lep.root",
+      "data_D.4lep.root"
 	      ]
 
 
@@ -653,7 +654,7 @@ for sample in samples:
 
    #Save cutflow histograms
    f_out.cd()
-   for cf, hist in cutflow:
+   for cf, hist in cutflow.items():
          hist.Write()
    
    f_out.Close()

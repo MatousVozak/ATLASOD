@@ -41,10 +41,11 @@ def create_dummy(hist, fixed_value=0):
 
 # Here we open the data that we want to analyse, which is in the form of a .root file. A .root file consists of a tree having branches and leaves.
 samples = [
-		"mc_345060.ggH125_ZZ4lep.4lep.root",
-		"mc_363490.llll.4lep.root",
+	 "mc_345060.ggH125_ZZ4lep.4lep.root",
+	 "mc_363490.llll.4lep.root",
     "mc_410000.ttbar_lep.4lep.root",
     "mc_363491.lllv.4lep.root",
+    "mc_363356.ZqqZll.4lep.root",
 
     #"zmumu.root",
     #"zee.root",
@@ -60,6 +61,7 @@ samples = [
 
 
 input_dir = "/project/atlas/users/mvozak/ATLASOD/output/"
+#input_dir = "/project/atlas/users/mvozak/ATLASOD/output/bkp_iso/"
 plot_dir  = "/project/atlas/users/mvozak/ATLASOD/figures/"
 lumi_data = 10
 
@@ -68,6 +70,7 @@ def get_sample_id(sample):
   elif "345060" in sample: return "HZZ"
   elif "410000" in sample: return "ttbar"
   elif "363491" in sample: return "WZ"
+  elif "363356" in sample: return "ZZqqll"
   elif "zmumu" in sample or "Zmumu" in sample:  return "Zmumu"
   elif "zee" in sample or "Zee" in sample:  return "Zee"
   elif "ztautau" in sample or "Ztautau" in sample:  return "Ztautau"
@@ -85,6 +88,7 @@ def get_short_name(sample):
   elif "Zee"    in sample: return "Zee"
   elif "Ztautau"in sample: return "Ztautau"
   elif "Zll"    in sample: return "Zll"
+  elif "ZZqqll"  in sample: return "ZZqqll"
   else: return sample
 
 
@@ -112,20 +116,25 @@ ytitle_offset = 1.
 xtitle_offset = 2.
 
 #event_channels = ["4m", "4e", "2m2e", "2e2m"]#, "inc"]
-event_channels = ["inc", "4m", "4e", "2m2e", "2e2m"]
+#event_channels = ["inc", "4m", "4e", "2m2e", "2e2m"]
+event_channels = ["inc"]
 for event_channel in event_channels:
 #stackChannels = True 
- for h_name in ["m4l", "m12",  "m23", "m4l_zoom", "m12_zoom", "m23_zoom",
-               "lep1_pt", "lep2_pt", "lep3_pt", "lep4_pt", "lepall_pt",
-              # "lep1_ptcone30", "lep2_ptcone30", "lep3_ptcone30", "lep4_ptcone30", "lepall_ptcone30",
-              # "lep1_etcone20", "lep2_etcone20", "lep3_etcone20", "lep4_etcone20", "lepall_etcone20",
-              # "lep1_E", "lep2_E", "lep3_E", "lep4_E", "lepall_E",
-              # "lep1_eta", "lep2_eta", "lep3_eta", "lep4_eta", "lepall_eta",
-              # "lep1_phi", "lep2_phi", "lep3_phi", "lep4_phi", "lepall_phi",
-              # "lep1_z0", "lep2_z0", "lep3_z0", "lep4_z0", "lepall_z0",
-              # "lep1_d0", "lep2_d0", "lep3_d0", "lep4_d0", "lepall_d0",
-              # "lep1_isTight", "lep2_isTight", "lep3_isTight", "lep4_isTight", "lepall_isTight",
-               "met", "njets", "nleptons", "jall_pt", "jall_jvt" ]:
+ for h_name in [
+          #    "cutflow",
+               "m4l", "m12",  "m23", "m4l_zoom", "m12_zoom", "m23_zoom",
+          #     "lep1_pt", "lep2_pt", "lep3_pt", "lep4_pt", "lepall_pt",
+          #     "lepquad_pt", "lepquad_eta",
+          #    # "lep1_ptcone30", "lep2_ptcone30", "lep3_ptcone30", "lep4_ptcone30", "lepall_ptcone30",
+          #    # "lep1_etcone20", "lep2_etcone20", "lep3_etcone20", "lep4_etcone20", "lepall_etcone20",
+          #    # "lep1_E", "lep2_E", "lep3_E", "lep4_E", "lepall_E",
+          #     "lep1_eta", "lep2_eta", "lep3_eta", "lep4_eta", "lepall_eta",
+          #    # "lep1_phi", "lep2_phi", "lep3_phi", "lep4_phi", "lepall_phi",
+          #    # "lep1_z0", "lep2_z0", "lep3_z0", "lep4_z0", "lepall_z0",
+          #    # "lep1_d0", "lep2_d0", "lep3_d0", "lep4_d0", "lepall_d0",
+          #    # "lep1_isTight", "lep2_isTight", "lep3_isTight", "lep4_isTight", "lepall_isTight",
+               "met", "njets", "nleptons", "jall_pt", "jall_jvt" 
+               ]:
    #event_channel = "4m"
    #h_name = "m4l"
    
@@ -161,6 +170,9 @@ for event_channel in event_channels:
 
       #Retrieve a histogram
       full_hname = "{}/{}".format(event_channel, h_name)
+      #full_hname = "{}".format(h_name)
+      #f.Print()
+      #f.ls()
       h = f.Get(full_hname)
       
       #Check whether the retrieval was done correctly
@@ -220,6 +232,7 @@ for event_channel in event_channels:
    #   if stack == None: stack = h_stacks["Zjets"].Clone()
    #   else: stack.Add( h_stacks["Zjets"] )
 
+
    if "Zmumu" in hists:
       if stack == None: stack = hists["Zmumu"].Clone()
       else: stack.Add( hists["Zmumu"] )
@@ -249,12 +262,9 @@ for event_channel in event_channels:
       #h.Add( hists["ttbar"])
       h_stacks["ttbar"] =  stack.Clone("ttbar")
       mc_list.append("ttbar")
-
-
    else: print("TTBAR NOT IN THE HISTOGRAMS")
 
    if "WZ" in hists:
-
       if stack == None: stack = hists["WZ"].Clone()
       else: stack.Add( hists["WZ"] )
       #h = h_stacks["ttbar"].Clone("WZ")
@@ -263,12 +273,21 @@ for event_channel in event_channels:
       mc_list.append("WZ")
    else: print("WZ NOT IN THE HISTOGRAMS")
 
+   if "ZZqqll" in hists:
+      if stack == None: stack = hists["ZZqqll"].Clone()
+      else: stack.Add( hists["ZZqqll"] )
+      h_stacks["ZZqqll"] =  stack.Clone("ZZqqll")
+      mc_list.append("ZZqqll")
+   else: print("ZZ(qqll) NOT IN THE HISTOGRAMS")
+
    if "ZZ" in hists:
-      if stack == None: stack = hists["ZZ"].Clone()
-      else: stack.Add( hists["ZZ"] )
+      h = hists["ZZ"].Clone()
+      h.Scale(1.3) #Adding an extra factor for loop induced ggZZ which is not among MC
+      if stack == None: stack = h
+      else: stack.Add( h )
       #h = h_stacks["WZ"].Clone("ZZ")
       #h.Add( hists["ZZ"])
-      h_stacks["ZZ"] =  stack.Clone("ZZ")
+      h_stacks["ZZ"] =  h
       mc_list.append("ZZ")
    else: print("ZZ NOT IN THE HISTOGRAMS")
 
@@ -304,10 +323,8 @@ for event_channel in event_channels:
    top_hist_dummy.Draw()
    top_hist_dummy.GetXaxis().SetLabelSize(0)
 
-   #ymax = hists[process_of_interest].GetMaximum()
-   #ymin = hists[process_of_interest].GetMinimum()
-   ymax = stack.GetMaximum()
-   ymin = stack.GetMinimum()
+   ymax = stack.GetMaximum() if stack.GetMaximum() > data.GetMaximum() else data.GetMaximum()
+   ymin = stack.GetMinimum() if stack.GetMinimum() < data.GetMinimum() else data.GetMinimum()
 
    top_hist_dummy.GetYaxis().SetRangeUser(0.01, 1.4*ymax)
    top_hist_dummy.GetYaxis().SetTitle("nEntries")
@@ -332,31 +349,37 @@ for event_channel in event_channels:
    #cols = ROOT.TColor.GetPalette()
    
    
-
    #Higgs + SM ZZ
    if "HZZ" in h_stacks:
     h_stacks["HZZ"].SetLineColor(ROOT.kRed)
     h_stacks["HZZ"].SetFillColor(ROOT.kRed)
     leg.AddEntry(h_stacks["HZZ"], get_short_name("345060") , 'f')
+    leg.AddEntry(h_stacks["HZZ"],  "{} {}".format( get_short_name("345060"), hists["HZZ"].Integral() )  , 'f')
     h_stacks["HZZ"].Draw("same hist")
 
    #Just SM ZZ
    if "ZZ" in h_stacks:
     h_stacks["ZZ"].SetLineColor(ROOT.kAzure + 7)
     h_stacks["ZZ"].SetFillColor(ROOT.kAzure + 7)
-    leg.AddEntry(h_stacks["ZZ"], get_short_name("363490") , 'f')
+    leg.AddEntry(h_stacks["ZZ"],  "{} {}".format( get_short_name("363490"), hists["ZZ"].Integral() )  , 'f')
     h_stacks["ZZ"].Draw("same hist")
+
+   if "ZZqqll" in h_stacks:
+    h_stacks["ZZqqll"].SetLineColor(ROOT.kBlue + 3)
+    h_stacks["ZZqqll"].SetFillColor(ROOT.kBlue + 3)
+    leg.AddEntry(h_stacks["ZZqqll"], "ZZqqll {}".format(hists["ZZqqll"].Integral() ) , 'f')
+    h_stacks["ZZqqll"].Draw("same hist")
 
    if "WZ" in h_stacks:
     h_stacks["WZ"].SetLineColor(ROOT.kBlue + 1)
     h_stacks["WZ"].SetFillColor(ROOT.kBlue + 1)
-    leg.AddEntry(h_stacks["WZ"], "WZ" , 'f')
+    leg.AddEntry(h_stacks["WZ"], "WZ {}".format(hists["WZ"].Integral() ) , 'f')
     h_stacks["WZ"].Draw("same hist")
 
    if "ttbar" in h_stacks:
     h_stacks["ttbar"].SetLineColor(ROOT.kGreen - 3)
     h_stacks["ttbar"].SetFillColor(ROOT.kGreen - 3)
-    leg.AddEntry(h_stacks["ttbar"], "ttbar" , 'f')
+    leg.AddEntry(h_stacks["ttbar"], "ttbar {}".format(hists["ttbar"].Integral() ), 'f')
     h_stacks["ttbar"].Draw("same hist")
 
    #Zjets
@@ -369,28 +392,27 @@ for event_channel in event_channels:
    if "Zee" in h_stacks:
     h_stacks["Zee"].SetLineColor(ROOT.kRed + 2)
     h_stacks["Zee"].SetFillColor(ROOT.kRed + 2)
-    leg.AddEntry(h_stacks["Zee"], "Zee" , 'f')
+    leg.AddEntry(h_stacks["Zee"], "Zee {}".format(hists["Zee"].Integral() ) , 'f')
     h_stacks["Zee"].Draw("same hist")
 
    if "Ztautau" in h_stacks:
     h_stacks["Ztautau"].SetLineColor(ROOT.kOrange + 5)
     h_stacks["Ztautau"].SetFillColor(ROOT.kOrange + 5)
-    leg.AddEntry(h_stacks["Ztautau"], "Ztautau" , 'f')
+    leg.AddEntry(h_stacks["Ztautau"], "Ztautau {}".format(hists["Ztautau"].Integral() ) , 'f')
     h_stacks["Ztautau"].Draw("same hist")
 
    if "Zmumu" in h_stacks:
     h_stacks["Zmumu"].SetLineColor(ROOT.kBlue - 5)
     h_stacks["Zmumu"].SetFillColor(ROOT.kBlue - 5)
-    leg.AddEntry(h_stacks["Zmumu"], "Zmumu" , 'f')
+    leg.AddEntry(h_stacks["Zmumu"], "Zmumu {}".format(hists["Zmumu"].Integral() ) , 'f')
     h_stacks["Zmumu"].Draw("same hist")
 
    data.SetLineColor(ROOT.kBlack)
    data.SetMarkerStyle(20)
    data.SetMarkerSize(0.5)
    data.SetMarkerColor(ROOT.kBlack)
-   leg.AddEntry(data, "Data 16" , 'pl')
+   leg.AddEntry(data, "Data 16 {}".format(data.Integral() ) , 'pl')
    data.Draw("same E")
-
 
    #Plot all combinations over
    #for name, hist in stacked_mc.items():
