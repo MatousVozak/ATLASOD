@@ -154,8 +154,24 @@ samples = [
  #  "mc_Others.4lep.root",
  #  "data.4lep.root",
    
+#   "mc_410155.ttW.4lep.root",
+#   "mc_410218.ttee.4lep.root",
+#   "mc_410219.ttmumu.4lep.root",
 
-	"mc_345060.ggH125_ZZ4lep.4lep.root",
+"mc_345060.ggH125_ZZ4lep.4lep.root",
+"mc_341122.ggH125_tautaull.4lep.root",
+"mc_341155.VBFH125_tautaull.4lep.root",
+"mc_341947.ZH125_ZZ4lep.4lep.root",
+"mc_341964.WH125_ZZ4lep.4lep.root",
+"mc_344235.VBFH125_ZZ4lep.4lep.root",
+"mc_345323.VBFH125_WW2lep.4lep.root",
+"mc_345324.ggH125_WW2lep.4lep.root",
+"mc_345325.WpH125J_qqWW2lep.4lep.root",
+"mc_345327.WpH125J_lvWW2lep.4lep.root",
+"mc_345336.ZH125J_qqWW2lep.4lep.root",
+"mc_345337.ZH125J_llWW2lep.4lep.root",
+"mc_345445.ZH125J_vvWW2lep.4lep.root",
+
 	"mc_363490.llll.4lep.root",
    "mc_363356.ZqqZll.4lep.root",
    "mc_410000.ttbar_lep.4lep.root",
@@ -225,6 +241,8 @@ combination_type = ["SFOC", "DFOC", "SFSC" ]
 #def get_event_flavour_channel( lead_pair, second_pair ):
 
 for sample in samples:
+
+   print "Working on sample: ", sample
    folder_name = "MC"
    isMC        = True
 
@@ -319,7 +337,7 @@ for sample in samples:
 
        cutflow["cutflow"].Fill( 0, finalWeight )
        #print("Event position : {}".format(it) )
-       #if it > 2000: break
+       #if it > 50: break
        #if( (it % 25000) == 0): print("Events processed: ", it)
        if( (it % 10000) == 0): print("Events processed: ", it)
 
