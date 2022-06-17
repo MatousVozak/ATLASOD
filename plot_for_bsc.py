@@ -22,6 +22,33 @@ def get_sample_id(sample):
   else:
     return sample
 
+
+HIGGS ="Higgs"
+ZZ   ="ZZ"
+FAKES="Fakes"
+
+def get_sample_tag(sample):
+    for tag in [ "345060", "344235", "341122", "341155", "341947", "341964"]:
+         if tag in sample:
+            return HIGGS
+
+    for tag in [ "361106", "361107", "361108", "410000", "363491", "363356" ]:
+         if tag in sample:
+            return FAKES
+
+    if "363490" in sample:
+            return ZZ
+
+    return sample
+
+
+def get_colour(sample):
+   if HIGGS in sample: return ROOT.kRed
+   if ZZ    in sample: return ROOT.kAzure  + 7
+   if FAKES in sample: return ROOT.kMagenta
+   else: return ROOT.kBlack
+
+
 def get_short_name(sample):
   if   "ZZ"     in sample or "363490" in sample: return "gg -> ZZ -> 4l"
   elif "HZZ"    in sample or "345060" in sample: return "gg -> H -> ZZ -> 4l"
@@ -69,43 +96,42 @@ def create_dummy(hist, fixed_value=0):
 
 # Here we open the data that we want to analyse, which is in the form of a .root file. A .root file consists of a tree having branches and leaves.
 samples = [
-	 "mc_345060.ggH125_ZZ4lep.4lep.root",
 	 "mc_363490.llll.4lep.root",
     "mc_410000.ttbar_lep.4lep.root",
     "mc_363491.lllv.4lep.root",
     "mc_363356.ZqqZll.4lep.root",
 
-    #"zmumu.root",
-    #"zee.root",
-    #"ztautau.root",
     "mc_361106.Zee.4lep.root",
     "mc_361107.Zmumu.4lep.root",
-    #"mc_361108.Ztautau.4lep.root",
-#proccessed_mc_363356.ZqqZll.4lep.root  proccessed_mc_363358.WqqZll.4lep.root
+    "mc_361108.Ztautau.4lep.root",
 
-    #"data.4lep.root",
     "data16.root",
-	  ]
 
-#proccessed_mc_341122.ggH125_tautaull.4lep.root
-#proccessed_mc_341155.VBFH125_tautaull.4lep.root
-#proccessed_mc_341947.ZH125_ZZ4lep.4lep.root
-#proccessed_mc_341964.WH125_ZZ4lep.4lep.root
-#proccessed_mc_344235.VBFH125_ZZ4lep.4lep.root
-#proccessed_mc_345060.ggH125_ZZ4lep.4lep.root
-#proccessed_mc_345323.VBFH125_WW2lep.4lep.root
-#proccessed_mc_345324.ggH125_WW2lep.4lep.root
-#proccessed_mc_345325.WpH125J_qqWW2lep.4lep.root
-#proccessed_mc_345327.WpH125J_lvWW2lep.4lep.root
-#proccessed_mc_345336.ZH125J_qqWW2lep.4lep.root
-#proccessed_mc_345337.ZH125J_llWW2lep.4lep.root
-#proccessed_mc_345445.ZH125J_vvWW2lep.4lep.root
+    "mc_345060.ggH125_ZZ4lep.4lep.root",
+    "mc_344235.VBFH125_ZZ4lep.4lep.root",
+    "mc_341122.ggH125_tautaull.4lep.root",
+    "mc_341155.VBFH125_tautaull.4lep.root",
+    "mc_341947.ZH125_ZZ4lep.4lep.root",
+    "mc_341964.WH125_ZZ4lep.4lep.root",
+
+    #"mc_345323.VBFH125_WW2lep.4lep.root",
+    #"mc_345324.ggH125_WW2lep.4lep.root",
+    #"mc_345325.WpH125J_qqWW2lep.4lep.root",
+    #"mc_345327.WpH125J_lvWW2lep.4lep.root",
+    #"mc_345336.ZH125J_qqWW2lep.4lep.root",
+    #"mc_345337.ZH125J_llWW2lep.4lep.root",
+    #"mc_345445.ZH125J_vvWW2lep.4lep.root",
+
+	  ]
 
 
 input_dir = "/project/atlas/users/mvozak/ATLASOD/output/"
 #input_dir = "/project/atlas/users/mvozak/ATLASOD/output/bkp_iso/"
 plot_dir  = "/project/atlas/users/mvozak/ATLASOD/figures/"
 lumi_data = 10
+
+
+
 
 
 
@@ -124,8 +150,8 @@ event_channels = ["inc"]
 for event_channel in event_channels:
 #stackChannels = True 
  for h_name in [
-              "cutflow",
-          #     "m4l", "m12",  "m23", "m4l_zoom", "m12_zoom", "m23_zoom",
+          #    "cutflow",
+               "m4l", "m12",  "m23", "m4l_zoom", "m12_zoom", "m23_zoom",
           #     "lep1_pt", "lep2_pt", "lep3_pt", "lep4_pt", "lepall_pt",
           #     "lepquad_pt", "lepquad_eta",
           #    # "lep1_ptcone30", "lep2_ptcone30", "lep3_ptcone30", "lep4_ptcone30", "lepall_ptcone30",
@@ -146,8 +172,8 @@ for event_channel in event_channels:
       f = ROOT.TFile.Open("{}/proccessed_{}".format(input_dir, sample), "READ")
 
       #Retrieve a histogram
-      #full_hname = "{}/{}".format(event_channel, h_name)
-      full_hname = "{}".format(h_name)
+      full_hname = "{}/{}".format(event_channel, h_name)
+      #full_hname = "{}".format(h_name)
       h = f.Get(full_hname)
       
       #Check whether the retrieval was done correctly
@@ -158,12 +184,24 @@ for event_channel in event_channels:
       #Remove ownership of the histogram
       h.SetDirectory(0)
 
+
+      #Apply 1.3 scaling factor for ZZ right from the start
+      if "363490" in sample: 
+         print("Scaling ZZ sample 363490 by a factor 1.3")
+         h.Scale(1.3)
+
       if "_pt" in full_hname: h.Rebin(5)
 
       #Store in the dictionary for later use
-      id_name = get_sample_id(sample)
+      #id_name = get_sample_id(sample)
+      id_name = get_sample_tag(sample)
       print("Adding {} to the hist".format(id_name))
-      hists[id_name] = h
+
+      if id_name in hists:
+         print("Adding sample {} into id_name {}".format(sample, id_name))
+         hists[id_name].Add( h )
+      else:
+         hists[id_name] = h
       
       f.Close()
    
@@ -191,75 +229,34 @@ for event_channel in event_channels:
    h_stacks  = {} # Stacking order: zjets, ttbar, WZ, ZZ, HZZ
    mc_list   = []
 
-   if "Zmumu" in hists:
-      if stack == None: stack = hists["Zmumu"].Clone()
-      else: stack.Add( hists["Zmumu"] )
-      h_stacks["Zmumu"] =  stack.Clone("Zmumu")
-      mc_list.append("Zmumu")
-   else: print("ZMUMU NOT IN THE HISTOGRAMS")
 
-   if "Ztautau" in hists:
-      if stack == None: stack = hists["Ztautau"].Clone()
-      else: stack.Add( hists["Ztautau"] )
-      h_stacks["Ztautau"] =  stack.Clone("Ztautau")
-      mc_list.append("Ztautau")
-   else: print("ZTAUTAU NOT IN THE HISTOGRAMS")
+   #Move HZZ and ZZ to the last and remove data
+   ordered_stack_list =  hists.keys()
 
-   if "Zee" in hists:
-      if stack == None: stack = hists["Zee"].Clone()
-      else: stack.Add( hists["Zee"] )
-      h_stacks["Zee"] =  stack.Clone("Zee")
-      mc_list.append("Zee")
-   else: print("ZEE NOT IN THE HISTOGRAMS")
-   #print(h_stacks)
+   #FIXME: dangerous what if different name later on for data
+   if "data16.root" in ordered_stack_list:
+      index =  ordered_stack_list.index("data16.root")
+      ordered_stack_list.pop(index)
 
-  ## if "ttbar" in hists:
-  ##    if stack == None: stack = hists["ttbar"].Clone()
-  ##    else: stack.Add( hists["ttbar"] )
-  ##    #h = h_stacks["Zjets"].Clone("ttbar")
-  ##    #h.Add( hists["ttbar"])
-  ##    h_stacks["ttbar"] =  stack.Clone("ttbar")
-  ##    mc_list.append("ttbar")
-  ## else: print("TTBAR NOT IN THE HISTOGRAMS")
+   if ZZ in ordered_stack_list:
+      index =  ordered_stack_list.index(ZZ)
+      ordered_stack_list.pop(index)
+      ordered_stack_list.append(ZZ)
 
-  ## if "WZ" in hists:
-  ##    if stack == None: stack = hists["WZ"].Clone()
-  ##    else: stack.Add( hists["WZ"] )
-  ##    #h = h_stacks["ttbar"].Clone("WZ")
-  ##    #h.Add( hists["WZ"])
-  ##    h_stacks["WZ"] =  stack.Clone("WZ")
-  ##    mc_list.append("WZ")
-  ## else: print("WZ NOT IN THE HISTOGRAMS")
+   if HIGGS in ordered_stack_list:
+      index =  ordered_stack_list.index(HIGGS)
+      ordered_stack_list.pop(index)
+      ordered_stack_list.append(HIGGS)
 
-  ## if "ZZqqll" in hists:
-  ##    if stack == None: stack = hists["ZZqqll"].Clone()
-  ##    else: stack.Add( hists["ZZqqll"] )
-  ##    h_stacks["ZZqqll"] =  stack.Clone("ZZqqll")
-  ##    mc_list.append("ZZqqll")
-  ## else: print("ZZ(qqll) NOT IN THE HISTOGRAMS")
+   print(ordered_stack_list)   
 
-   if "ZZ" in hists:
-      h = hists["ZZ"].Clone()
-      h.Scale(1.3) #Adding an extra factor for loop induced ggZZ which is not among MC
-      if stack == None: stack = h
-      else: stack.Add( h )
-      #h = h_stacks["WZ"].Clone("ZZ")
-      #h.Add( hists["ZZ"])
-      h_stacks["ZZ"] =  h
-      mc_list.append("ZZ")
-   else: print("ZZ NOT IN THE HISTOGRAMS")
 
-   if "HZZ" in hists:
-      if stack == None: stack = hists["HZZ"].Clone()
-      else: stack.Add( hists["HZZ"] )
-      #h = h_stacks["ZZ"].Clone("HZZ")
-      #h.Add( hists["HZZ"])
+   for mc in ordered_stack_list:
+      if stack == None: stack = hists[mc].Clone()
+      else:             stack.Add( hists[mc] )
 
-      h_stacks["HZZ"] =  stack.Clone("HZZ")
-      mc_list.append("HZZ")
-   else: print("HZZ NOT IN THE HISTOGRAMS")
+      h_stacks[mc] =  stack.Clone(mc)
 
-   #stack = h_stacks["HZZ"]
   #-----------------------------------------
   #TODO: 2D plotting
 
@@ -306,56 +303,16 @@ for event_channel in event_channels:
    #ROOT.gStyle.SetPalette(57)
    #cols = ROOT.TColor.GetPalette()
    
+   for mc in reversed(ordered_stack_list):
+       colour =   get_colour(mc) 
+       print(colour)
+       colour = int(colour)
+       h_stacks[mc].SetLineColor(colour)
+       h_stacks[mc].SetFillColor(colour)
+       
+       leg.AddEntry(h_stacks[mc],  "{} {:0.0f}".format( get_short_name(mc), hists[mc].Integral() )  , 'f')
+       h_stacks[mc].Draw("same hist")
    
-   #Higgs + SM ZZ
-   if "HZZ" in h_stacks:
-    h_stacks["HZZ"].SetLineColor(ROOT.kRed)
-    h_stacks["HZZ"].SetFillColor(ROOT.kRed)
-    leg.AddEntry(h_stacks["HZZ"],  "{} {:0.0f}".format( get_short_name("345060"), hists["HZZ"].Integral() )  , 'f')
-    h_stacks["HZZ"].Draw("same hist")
-
-   #Just SM ZZ
-   if "ZZ" in h_stacks:
-    h_stacks["ZZ"].SetLineColor(ROOT.kAzure + 7)
-    h_stacks["ZZ"].SetFillColor(ROOT.kAzure + 7)
-    leg.AddEntry(h_stacks["ZZ"],  "{} {:0.0f}".format( get_short_name("363490"), hists["ZZ"].Integral() )  , 'f')
-    h_stacks["ZZ"].Draw("same hist")
-
-   #if "ZZqqll" in h_stacks:
-   # h_stacks["ZZqqll"].SetLineColor(ROOT.kBlue + 3)
-   # h_stacks["ZZqqll"].SetFillColor(ROOT.kBlue + 3)
-   # leg.AddEntry(h_stacks["ZZqqll"], "ZZqqll {}".format(hists["ZZqqll"].Integral() ) , 'f')
-   # h_stacks["ZZqqll"].Draw("same hist")
-
-   #if "WZ" in h_stacks:
-   # h_stacks["WZ"].SetLineColor(ROOT.kBlue + 1)
-   # h_stacks["WZ"].SetFillColor(ROOT.kBlue + 1)
-   # leg.AddEntry(h_stacks["WZ"], "WZ {}".format(hists["WZ"].Integral() ) , 'f')
-   # h_stacks["WZ"].Draw("same hist")
-
-   #if "ttbar" in h_stacks:
-   # h_stacks["ttbar"].SetLineColor(ROOT.kGreen - 3)
-   # h_stacks["ttbar"].SetFillColor(ROOT.kGreen - 3)
-   # leg.AddEntry(h_stacks["ttbar"], "ttbar {}".format(hists["ttbar"].Integral() ), 'f')
-   # h_stacks["ttbar"].Draw("same hist")
-
-   if "Zee" in h_stacks:
-    h_stacks["Zee"].SetLineColor(ROOT.kRed + 2)
-    h_stacks["Zee"].SetFillColor(ROOT.kRed + 2)
-    leg.AddEntry(h_stacks["Zee"], "Zee {}".format(hists["Zee"].Integral() ) , 'f')
-    h_stacks["Zee"].Draw("same hist")
-
-   if "Ztautau" in h_stacks:
-    h_stacks["Ztautau"].SetLineColor(ROOT.kOrange + 5)
-    h_stacks["Ztautau"].SetFillColor(ROOT.kOrange + 5)
-    leg.AddEntry(h_stacks["Ztautau"], "Ztautau {}".format(hists["Ztautau"].Integral() ) , 'f')
-    h_stacks["Ztautau"].Draw("same hist")
-
-   if "Zmumu" in h_stacks:
-    h_stacks["Zmumu"].SetLineColor(ROOT.kBlue - 5)
-    h_stacks["Zmumu"].SetFillColor(ROOT.kBlue - 5)
-    leg.AddEntry(h_stacks["Zmumu"], "Zmumu {}".format(hists["Zmumu"].Integral() ) , 'f')
-    h_stacks["Zmumu"].Draw("same hist")
 
    data.SetLineColor(ROOT.kBlack)
    data.SetMarkerStyle(20)

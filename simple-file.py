@@ -1,40 +1,8 @@
 ########################################################################################
-#                                                                                      #
-#               A simple introductional notebook to HEP analysis in python             #
-#       In this notebook you can find an easy set of commands that show the basic      #
-#       computing techniques commonly used in high energy physics (HEP) analyzes.      #
-#       It also shows how to create a histogram, fill it and draw it, using ROOT       #
-#       (https://root.cern.ch/). ROOT is a scientific software framework that          #
-#       provides all the functionalities needed to deal with big data processing,      #
-#       statistical analysis, visualisation and storage.                               #
-#                                                                                      #
-# Run this script by typing:                                                           #
-#       >> python A-simple-example.py                                                  #
-#                                                                                      #
-#       At the end you get a plot with the number of leptons.                          #
-########################################################################################
-
-
-
 #ROOT is imported to read the files in the .root data format.
 import ROOT
 
 ROOT.gROOT.SetBatch(ROOT.kFALSE)
-
-#def pair_is_SFOC( charge_i, charge_j, type_i, type_j):
-# 		if charge_i != (-charge_j): return False
-#    	if type_i != type_j: return False
-#      return True
-#
-#def pair_is_DFOC( charge_i, charge_j, type_i, type_j):
-# 		if charge_i != (-charge_j): return False
-#    	if type_i == type_j: return False
-#      return True
-#
-#def pair_is_SFSC( charge_i, charge_j, type_i, type_j):
-# 		if charge_i != (charge_j): return False
-#    	if type_i != type_j: return False
-#      return True
 
 def check_pair_type( charge_i, charge_j, type_i, type_j, debug = False ):
    pair_type = ""
@@ -677,64 +645,3 @@ for sample in samples:
    
    f_out.Close()
 	
-	# Now want to draw the histogram, and set the fill colour
-	#hist.SetLineColor(ROOT.kBlack)
-	#hist.SetLineWidth(2)
-	#hist.SetFillColor(ROOT.kAzure)
-	#hist.Draw("HIST")
-	
-	# Draw the canvas, which contains the histogram
-	#canvas.Update()
-	
-	# The following lines allow the canvas to be displayed,
-	#       until you press enter in the command line.
-	#try:
-	#    __IPYTHON__
-	#except:
-	#    raw_input('Press Enter to exit')
-	
-	# Next we can also normalise the histogram (so the integral is 1), to allow us to see the proportions. By doing this, you can directly read of the y-axis what fraction of events fall into each bin.
-	#scale = hist.Integral()
-	#hist.Scale(1/scale)
-	
-	# Set some new colour settings for the histogram
-	#hist.SetLineColor(ROOT.kBlack)
-	#hist.SetLineWidth(2)
-	#hist.SetFillColor(ROOT.kViolet)
-	#
-	## Again we re-draw the histogram and canvas.
-	#hist.Draw("HIST")
-	#canvas.Draw()
-	#canvas.Print("my_hist.jpg")
-	#
-	#try:
-	#    __IPYTHON__
-	#except:
-	#    raw_input('Press Enter to exit')
-	
-	##############################################################################################################################################
-	#
-	#       Exercise to try: How could you select to have exactly 2 leptons (i.e. lep_n ==2) ?
-	#               You can check if you've done it correctly by looking at the resulting histograms. What do you expect will change?
-	#               What do you notice about the number of entries in the histogram now?
-	#               *Hint*: There's a comment above indicating where in the code you should place your cuts.
-	#
-	#       Bonus exercise: Can you try plotting another variable instead of "number of leptons"?
-	#               e.g. What about the number of jets?
-	#               *Hint*: the number of jets variable is labelled "jet_n" in the tree.
-	#               You might also need to change the x-axis range of the histogram.
-	#
-	##############################################################################################################################################
-
-
-         #for ilep in range( len(tree.scaleFactor_MUON ) ) :
-         #for ilep in range( len(tree.scaleFactor_ELECTRON) ):
-
-         #leptonSFs = 1.
-
-         #print("Combined lepton SF: {}".format(leptonSFs))
-
-
-         #Apply lepton SFs
-         #lep_isTightID
-         #scaleFactor_MUON/ELE
